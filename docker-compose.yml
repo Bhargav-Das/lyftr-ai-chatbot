@@ -1,0 +1,40 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: lyftr-backend
+
+    env_file:
+      - ./backend/.env
+
+    environment:
+      DATABASE_URL: sqlite:////data/app.db
+      ALLOWED_ORIGINS: http://localhost:3000
+
+    volumes:
+      - chatbot_data:/data
+
+    ports:
+      - "8000:8000"
+
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: lyftr-frontend
+
+    environment:
+      VITE_API_URL: http://localhost:8000
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped
+
+
+volumes:
+  chatbot_data:
